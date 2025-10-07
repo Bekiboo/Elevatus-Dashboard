@@ -127,7 +127,8 @@ export async function createUser(data: {
       firstName: data.firstName,
       lastName: data.lastName,
       title: data.title,
-      role: data.role || 'author'
+      role: data.role || 'author',
+      verified: true // Les utilisateurs créés via invitation sont automatiquement vérifiés
     }).returning();
     
     if (result.length === 0) return null;
