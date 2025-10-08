@@ -14,7 +14,7 @@
 		<!-- Page header -->
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-			<p class="mt-2 text-sm text-gray-700">Welcome back, {data.user.firstName}!</p>
+			<p class="mt-2 text-sm text-gray-700">Welcome back, {data.user?.firstName || 'User'}!</p>
 		</div>
 
 		<!-- Quick Stats -->

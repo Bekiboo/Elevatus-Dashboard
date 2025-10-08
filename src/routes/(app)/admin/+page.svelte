@@ -232,7 +232,7 @@
 											<input type="hidden" name="userId" value={user.id} />
 											<select 
 												name="role" 
-												onchange={(e) => e.target.form.submit()}
+												onchange={(e) => (e.target as HTMLSelectElement)?.form?.submit()}
 												class="text-xs border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
 											>
 												<option value="author" selected={user.role === 'author'}>Author</option>
