@@ -14,14 +14,38 @@
 	let showCopySuccess = $state(false);
 	
 	// Fonctions utilitaires
-	function copyInviteUrl(url: string) {
+	function copyInviteUrl(url?: string) {
+		if (!url) return;
 		navigator.clipboard.writeText(url).then(() => {
+			showCopySuccess = true;
+			setTimeout(() => {
+				showCopySuccess = false;
+			}, 2000);
+		}).catch(() => {
+			// Fallback pour les navigateurs qui ne supportent pas l'API clipboard
+			const textArea = document.createElement('textarea');
+			textArea.value = url;
+			document.body.appendChild(textArea);
+			textArea.select();
+			document.execCommand('copy');
+			document.body.removeChild(textArea);
 			showCopySuccess = true;
 			setTimeout(() => {
 				showCopySuccess = false;
 			}, 2000);
 		});
 	}
+	
+	// Réinitialiser le formulaire après succès
+	$effect(() => {
+		if (form?.success && form?.inviteUrl) {
+			// Réinitialiser le formulaire après 3 secondes
+			setTimeout(() => {
+				inviteEmail = '';
+				inviteRole = 'author';
+			}, 3000);
+		}
+	});
 	
 	function canDeleteUser(user: any): boolean {
 		// Ne peut pas supprimer soi-même
@@ -309,51 +333,114 @@
 
 		{#if activeTab === 'create'}
 			<!-- Onglet Création d'invitation -->
-			<div class="bg-white shadow sm:rounded-lg">
+			<div class="bg-white shadow rounded-lg">
 				<div class="px-4 py-5 sm:p-6">
-					<h3 class="text-lg leading-6 font-medium text-gray-900">Inviter un nouvel utilisateur</h3>
-					<div class="mt-2 max-w-xl text-sm text-gray-500">
-						<p>Créez une invitation pour permettre à quelqu'un de rejoindre la plateforme.</p>
-					</div>
-					<form method="post" action="?/createInvite" class="mt-5" use:enhance>
-						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-							<div>
-								<label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
-								<input
-									type="email"
-									name="email"
-									id="email"
-									required
-									bind:value={inviteEmail}
-									class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-									placeholder="utilisateur@example.com"
-								/>
+					<h3 class="text-lg leading-6 font-medium text-gray-900">
+						Inviter un nouvel utilisateur
+					</h3>
+					<p class="mt-1 text-sm text-gray-500">
+						Créez une invitation pour qu'une nouvelle personne rejoigne l'équipe Elevatus.
+					</p>
+
+					{#if form?.success && form?.inviteUrl}
+						<div class="mt-4 rounded-md bg-green-50 p-4">
+							<div class="flex">
+								<div class="flex-shrink-0">
+									<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+									</svg>
+								</div>
+								<div class="ml-3">
+									<h3 class="text-sm leading-5 font-medium text-green-800">
+										Invitation créée avec succès !
+									</h3>
+									<div class="mt-2 text-sm leading-5 text-green-700">
+										<p>L'invitation pour <strong>{form.email}</strong> a été créée.</p>
+										<p class="mt-2">Partagez ce lien avec la personne invitée :</p>
+										<div class="mt-3 p-3 bg-white border border-green-200 rounded-md">
+											<div class="flex items-center justify-between">
+												<code class="text-xs text-gray-800 break-all flex-1 mr-2">
+													{form.inviteUrl}
+												</code>
+												<button
+													type="button"
+													onclick={() => copyInviteUrl(form.inviteUrl)}
+													class="inline-flex items-center px-2 py-1 border border-green-300 text-xs font-medium rounded text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+												>
+													{showCopySuccess ? '✓ Copié' : '📋 Copier'}
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
+						</div>
+					{/if}
+
+					<form method="post" action="?/createInvite" class="mt-6" use:enhance>
+						<div class="grid grid-cols-1 gap-6 sm:grid-cols-1">
 							<div>
-								<label for="role" class="block text-sm font-medium text-gray-700">Rôle *</label>
+								<label for="email" class="block text-sm font-medium text-gray-700">
+									Adresse email
+								</label>
+								<div class="mt-1">
+									<input
+										type="email"
+										name="email"
+										id="email"
+										bind:value={inviteEmail}
+										class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+										placeholder="exemple@domain.com"
+										required
+									/>
+								</div>
+								<p class="mt-2 text-sm text-gray-500">
+									L'email de la personne que vous souhaitez inviter.
+								</p>
+							</div>
+
+							<div>
+								<label for="role" class="block text-sm font-medium text-gray-700">
+									Rôle
+								</label>
 								<select
 									name="role"
 									id="role"
 									bind:value={inviteRole}
 									class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
 								>
-									<option value="author">Auteur</option>
-									<option value="admin">Administrateur</option>
+									<option value="viewer">Lecteur - Peut uniquement consulter le contenu</option>
+									<option value="author">Auteur - Peut créer et modifier du contenu</option>
+									<option value="admin">Administrateur - Accès complet à la plateforme</option>
 								</select>
+								<p class="mt-2 text-sm text-gray-500">
+									Choisissez le niveau d'accès pour cette personne.
+								</p>
 							</div>
 						</div>
-						<div class="mt-6 bg-gray-50 p-4 rounded-md">
-							<h4 class="text-sm font-medium text-gray-900 mb-2">Aperçu de l'invitation</h4>
-							<div class="text-sm text-gray-600">
-								<p><strong>Email :</strong> {inviteEmail || 'Non spécifié'}</p>
-								<p><strong>Rôle :</strong> {inviteRole === 'admin' ? 'Administrateur' : 'Auteur'}</p>
-								<p><strong>Validité :</strong> 7 jours</p>
-							</div>
+
+						<div class="mt-6 bg-gray-50 rounded-lg p-4">
+							<h4 class="text-sm font-medium text-gray-900">Aperçu de l'invitation</h4>
+							<dl class="mt-2 text-sm text-gray-600">
+								<div class="flex justify-between py-1">
+									<dt class="font-medium">Email:</dt>
+									<dd>{inviteEmail || 'Non spécifié'}</dd>
+								</div>
+								<div class="flex justify-between py-1">
+									<dt class="font-medium">Rôle:</dt>
+									<dd>{inviteRole === 'admin' ? 'Administrateur' : inviteRole === 'author' ? 'Auteur' : 'Lecteur'}</dd>
+								</div>
+								<div class="flex justify-between py-1">
+									<dt class="font-medium">Expiration:</dt>
+									<dd>7 jours après création</dd>
+								</div>
+							</dl>
 						</div>
-						<div class="mt-5 flex justify-between">
+
+						<div class="mt-6 flex items-center justify-end space-x-3">
 							<button
 								type="button"
-								onclick={() => {inviteEmail = ''; inviteRole = 'author';}}
+								onclick={() => { inviteEmail = ''; inviteRole = 'author'; }}
 								class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
 							>
 								Réinitialiser
@@ -363,6 +450,9 @@
 								disabled={!inviteEmail}
 								class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
+								<svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+								</svg>
 								Créer l'invitation
 							</button>
 						</div>

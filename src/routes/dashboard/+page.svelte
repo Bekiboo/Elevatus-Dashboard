@@ -67,7 +67,7 @@
 												Inviter un utilisateur
 											</dt>
 											<dd class="text-lg font-medium text-gray-900">
-												<a href="/invite" class="text-green-600 hover:text-green-500">
+												<a href="/admin" class="text-green-600 hover:text-green-500">
 													Créer une invitation
 												</a>
 											</dd>
