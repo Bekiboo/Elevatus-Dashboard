@@ -2,10 +2,10 @@ import type { Handle } from '@sveltejs/kit';
 import { getUserFromEvent } from '$lib/server/auth.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
-  // Récupérer l'utilisateur depuis le cookie d'auth
+  // Get user from auth cookie
   const user = await getUserFromEvent(event);
   
-  // Ajouter l'utilisateur aux locals pour qu'il soit accessible dans toutes les pages
+  // Add user to locals so it's accessible in all pages
   event.locals.user = user;
   
   // Continuer avec la requête

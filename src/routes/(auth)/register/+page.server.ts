@@ -3,7 +3,7 @@ import { createUser, validateInvitationToken, markInvitationAsUsed, generateToke
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  // Si l'utilisateur est déjà connecté, rediriger vers le dashboard
+  // If user is already logged in, redirect to dashboard
   if (locals.user) {
     throw redirect(302, '/dashboard');
   }
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     throw redirect(302, '/login');
   }
   
-  // Valider le token d'invitation
+  // Validate invitation token
   const invitation = await validateInvitationToken(token);
   
   if (!invitation) {
@@ -39,10 +39,10 @@ export const actions: Actions = {
     const title = data.get('title') as string;
     const token = data.get('token') as string;
 
-    // Validation basique
+    // Basic validation
     if (!email || !password || !confirmPassword || !firstName || !lastName || !token) {
       return fail(400, {
-        error: 'Tous les champs requis doivent être remplis',
+        error: 'All required fields must be filled',
         firstName,
         lastName,
         title,
@@ -50,10 +50,10 @@ export const actions: Actions = {
       });
     }
 
-    // Vérifier que les mots de passe correspondent
+    // Check that passwords match
     if (password !== confirmPassword) {
       return fail(400, {
-        error: 'Les mots de passe ne correspondent pas',
+        error: 'Passwords do not match',
         firstName,
         lastName,
         title,
@@ -61,10 +61,10 @@ export const actions: Actions = {
       });
     }
 
-    // Validation du mot de passe
+    // Password validation
     if (password.length < 8) {
       return fail(400, {
-        error: 'Le mot de passe doit contenir au moins 8 caractères',
+        error: 'Password must contain at least 8 characters',
         firstName,
         lastName,
         title,
@@ -72,11 +72,11 @@ export const actions: Actions = {
       });
     }
 
-    // Validation email
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return fail(400, {
-        error: 'Format d\'email invalide',
+        error: 'Invalid email format',
         firstName,
         lastName,
         title,
@@ -85,12 +85,12 @@ export const actions: Actions = {
     }
 
     try {
-      // Revalider le token d'invitation
+      // Revalidate invitation token
       const invitation = await validateInvitationToken(token);
       
       if (!invitation) {
         return fail(400, {
-          error: 'Token d\'invitation invalide ou expiré',
+          error: 'Invalid or expired invitation token',
           firstName,
           lastName,
           title,
@@ -98,10 +98,10 @@ export const actions: Actions = {
         });
       }
 
-      // Vérifier que l'email correspond
+      // Check that email matches
       if (invitation.email !== email) {
         return fail(400, {
-          error: 'L\'email ne correspond pas à l\'invitation',
+          error: 'Email does not match the invitation',
           firstName,
           lastName,
           title,
@@ -109,7 +109,7 @@ export const actions: Actions = {
         });
       }
 
-      // Créer l'utilisateur
+      // Create user
       const user = await createUser({
         email,
         password,
@@ -121,7 +121,7 @@ export const actions: Actions = {
 
       if (!user) {
         return fail(500, {
-          error: 'Erreur lors de la création du compte. L\'email est peut-être déjà utilisé.',
+          error: 'Error creating account. Email may already be in use.',
           firstName,
           lastName,
           title,
@@ -129,31 +129,31 @@ export const actions: Actions = {
         });
       }
 
-      // Marquer l'invitation comme utilisée
+      // Mark invitation as used
       await markInvitationAsUsed(token);
 
-      // Connecter l'utilisateur automatiquement
+      // Log user in automatically
       const authToken = generateToken(user);
       cookies.set('auth_token', authToken, {
         path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7 jours
+        maxAge: 60 * 60 * 24 * 7, // 7 days
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
 
-      // Rediriger vers le dashboard
+      // Redirect to dashboard
       throw redirect(302, '/dashboard');
 
     } catch (error) {
-      // Si c'est une redirection, la relancer
+      // If it's a redirect, re-throw it
       if (error && typeof error === 'object' && 'status' in error && error.status === 302) {
         throw error;
       }
       
       console.error('Registration error:', error);
       return fail(500, {
-        error: 'Une erreur est survenue lors de la création du compte',
+        error: 'An error occurred while creating the account',
         firstName,
         lastName,
         title,

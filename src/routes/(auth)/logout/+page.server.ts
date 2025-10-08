@@ -8,10 +8,10 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
   default: async ({ cookies }) => {
-    // Supprimer le cookie d'authentification
+    // Delete authentication cookie
     cookies.delete('auth_token', { path: '/' });
     
-    // Rediriger vers la page de connexion
+    // Redirect to login page
     throw redirect(302, '/login?message=logged_out');
   }
 };

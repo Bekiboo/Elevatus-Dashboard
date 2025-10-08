@@ -19,17 +19,17 @@
 </script>
 
 <svelte:head>
-	<title>Créer un compte - Elevatus Dashboard</title>
+	<title>Create Account - Elevatus Dashboard</title>
 </svelte:head>
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
 	<div class="max-w-md w-full space-y-8">
 		<div>
 			<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-				Créer votre compte
+				Create Your Account
 			</h2>
 			<p class="mt-2 text-center text-sm text-gray-600">
-				Bienvenue dans l'équipe Elevatus !
+				Welcome to the Elevatus team!
 				<br />
 				<span class="font-medium text-indigo-600">{data.email}</span>
 				<br />
@@ -72,10 +72,10 @@
 			{/if}
 
 			<div class="space-y-4">
-				<!-- Prénom et Nom -->
+				<!-- First Name and Last Name -->
 				<div class="grid grid-cols-2 gap-4">
 					<div>
-						<label for="firstName" class="block text-sm font-medium text-gray-700">Prénom</label>
+						<label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
 						<input
 							id="firstName"
 							name="firstName"
@@ -83,11 +83,11 @@
 							required
 							bind:value={firstName}
 							class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-							placeholder="Prénom"
+							placeholder="First Name"
 						/>
 					</div>
 					<div>
-						<label for="lastName" class="block text-sm font-medium text-gray-700">Nom</label>
+						<label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
 						<input
 							id="lastName"
 							name="lastName"
@@ -95,27 +95,27 @@
 							required
 							bind:value={lastName}
 							class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-							placeholder="Nom"
+							placeholder="Last Name"
 						/>
 					</div>
 				</div>
 
-				<!-- Titre -->
+				<!-- Title -->
 				<div>
-					<label for="title" class="block text-sm font-medium text-gray-700">Titre (optionnel)</label>
+					<label for="title" class="block text-sm font-medium text-gray-700">Title (optional)</label>
 					<input
 						id="title"
 						name="title"
 						type="text"
 						bind:value={title}
 						class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-						placeholder="ex: Nutritionist, Director..."
+						placeholder="e.g. Nutritionist, Director..."
 					/>
 				</div>
 
-				<!-- Mot de passe -->
+				<!-- Password -->
 				<div>
-					<label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+					<label for="password" class="block text-sm font-medium text-gray-700">Password</label>
 					<input
 						id="password"
 						name="password"
@@ -123,16 +123,16 @@
 						required
 						bind:value={password}
 						class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-						placeholder="Au moins 8 caractères"
+						placeholder="At least 8 characters"
 					/>
 					{#if password.length > 0 && !passwordValid}
-						<p class="mt-1 text-sm text-red-600">Le mot de passe doit contenir au moins 8 caractères</p>
+						<p class="mt-1 text-sm text-red-600">Password must contain at least 8 characters</p>
 					{/if}
 				</div>
 
-				<!-- Confirmation mot de passe -->
+				<!-- Confirm Password -->
 				<div>
-					<label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
+					<label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
 					<input
 						id="confirmPassword"
 						name="confirmPassword"
@@ -140,10 +140,10 @@
 						required
 						bind:value={confirmPassword}
 						class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-						placeholder="Confirmez votre mot de passe"
+						placeholder="Confirm your password"
 					/>
 					{#if confirmPassword.length > 0 && !passwordsMatch}
-						<p class="mt-1 text-sm text-red-600">Les mots de passe ne correspondent pas</p>
+						<p class="mt-1 text-sm text-red-600">Passwords do not match</p>
 					{/if}
 				</div>
 			</div>
@@ -159,18 +159,18 @@
 							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 						</svg>
-						Création...
+						Creating...
 					{:else}
-						Créer mon compte
+						Create My Account
 					{/if}
 				</button>
 			</div>
 
 			<div class="text-center">
 				<p class="text-sm text-gray-600">
-					Vous avez déjà un compte ? 
+					Already have an account? 
 					<a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-						Se connecter
+						Sign in
 					</a>
 				</p>
 			</div>

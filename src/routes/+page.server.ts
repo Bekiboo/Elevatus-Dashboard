@@ -2,21 +2,21 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  // Si l'utilisateur est connecté, rediriger vers le dashboard
+  // If user is logged in, redirect to dashboard
   if (locals.user) {
     throw redirect(302, '/dashboard');
   }
   
-  // Sinon, rediriger vers la page de connexion
+  // Otherwise, redirect to login page
   throw redirect(302, '/login');
 };
 
 export const actions: Actions = {
   logout: async ({ cookies }) => {
-    // Supprimer le cookie d'authentification
+    // Delete authentication cookie
     cookies.delete('auth_token', { path: '/' });
     
-    // Rediriger vers la page de connexion
+    // Redirect to login page
     throw redirect(302, '/login?message=logged_out');
   }
 };

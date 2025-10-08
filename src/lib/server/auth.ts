@@ -128,7 +128,7 @@ export async function createUser(data: {
       lastName: data.lastName,
       title: data.title,
       role: data.role || 'author',
-      verified: true // Les utilisateurs créés via invitation sont automatiquement vérifiés
+      verified: true // Users created via invitation are automatically verified
     }).returning();
     
     if (result.length === 0) return null;
@@ -221,7 +221,7 @@ export async function validateInvitationToken(token: string): Promise<{
     
     const invitation = result[0];
     
-    // Vérifier si l'invitation n'est pas expirée et n'a pas été utilisée
+    // Check if invitation is not expired and has not been used
     if (invitation.used || invitation.expiresAt < new Date()) {
       return null;
     }
@@ -258,7 +258,7 @@ export async function getUserFromEvent(event: RequestEvent): Promise<AuthUser | 
   const decoded = verifyToken(token);
   if (!decoded) return null;
   
-  // Récupérer les infos complètes de l'utilisateur
+  // Get complete user information
   return getUserById(decoded.id);
 }
 

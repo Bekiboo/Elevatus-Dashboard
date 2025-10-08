@@ -9,7 +9,7 @@ import {
   jsonb 
 } from 'drizzle-orm/pg-core';
 
-// Utilisateurs du système (admins, auteurs, etc.)
+// System users (admins, authors, etc.)
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -23,7 +23,7 @@ export const users = pgTable('users', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Invitations pour de futurs utilisateurs
+// Invitations for future users
 export const invitations = pgTable('invitations', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull(),

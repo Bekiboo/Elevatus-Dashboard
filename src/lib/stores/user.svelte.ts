@@ -1,8 +1,8 @@
 import type { AuthUser } from '$lib/server/auth.js';
 
 /**
- * Store d'utilisateur avec la syntaxe Svelte 5
- * Utilise les runes pour une réactivité optimale
+ * User store with Svelte 5 syntax
+ * Uses runes for optimal reactivity
  */
 class UserStore {
   #user = $state<AuthUser | null>(null);
@@ -40,13 +40,13 @@ class UserStore {
   hasRole(requiredRole: string): boolean {
     if (!this.#user) return false;
     
-    // Les admins ont tous les droits
+    // Admins have all rights
     if (this.#user.role === 'admin') return true;
     
     return this.#user.role === requiredRole;
   }
   
-  // Méthode pour vérifier si l'utilisateur peut faire une action
+  // Method to check if user can perform an action
   canWrite(): boolean {
     return this.hasRole('author') || this.hasRole('admin');
   }

@@ -3,7 +3,7 @@ import { authenticateUser, generateToken } from '$lib/server/auth.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  // Si l'utilisateur est déjà connecté, rediriger vers le dashboard
+  // If user is already logged in, redirect to dashboard
   if (locals.user) {
     throw redirect(302, '/dashboard');
   }
@@ -17,38 +17,38 @@ export const actions: Actions = {
     const email = data.get('email') as string;
     const password = data.get('password') as string;
 
-    // Validation basique
+    // Basic validation
     if (!email || !password) {
       return fail(400, {
-        error: 'Email et mot de passe sont requis',
+        error: 'Email and password are required',
         email
       });
     }
 
-    // Validation email
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return fail(400, {
-        error: 'Format d\'email invalide',
+        error: 'Invalid email format',
         email
       });
     }
 
     try {
-      // Tenter l'authentification
+      // Attempt authentication
       const user = await authenticateUser(email, password);
 
       if (!user) {
         return fail(400, {
-          error: 'Email ou mot de passe incorrect',
+          error: 'Incorrect email or password',
           email
         });
       }
 
-      // Vérifier si l'utilisateur est vérifié
+      // Check if user is verified
       if (!user.verified) {
         return fail(400, {
-          error: 'Votre compte n\'est pas encore vérifié. Contactez un administrateur.',
+          error: 'Your account is not yet verified. Please contact an administrator.',
           email
         });
       }
@@ -63,18 +63,18 @@ export const actions: Actions = {
         sameSite: 'strict'
       });
 
-      // Rediriger vers le dashboard
+      // Redirect to dashboard
       throw redirect(302, '/dashboard');
 
     } catch (error) {
-      // Si c'est une redirection, la relancer
+      // If it's a redirect, re-throw it
       if (error && typeof error === 'object' && 'status' in error && error.status === 302) {
         throw error;
       }
       
       console.error('Login error:', error);
       return fail(500, {
-        error: 'Une erreur est survenue lors de la connexion',
+        error: 'An error occurred during login',
         email
       });
     }
