@@ -5,7 +5,7 @@ import { eq, and, count } from 'drizzle-orm';
 import { createInvitation } from '$lib/server/auth.js';
 import type { Actions } from '@sveltejs/kit';
 
-export const load = async ({ locals }) => {
+export const load = async ({ locals }: { locals: App.Locals }) => {
   // Check that user is admin
   if (!locals.user || locals.user.role !== 'admin') {
     throw redirect(302, '/dashboard');
@@ -24,19 +24,7 @@ export const load = async ({ locals }) => {
   };
 };
 
-// Helper function to check if there are other admins
-async function hasOtherAdmins(currentUserId: number): Promise<boolean> {
-  const adminCount = await db.select({ count: count() })
-    .from(users)
-    .where(and(
-      eq(users.role, 'admin'),
-      eq(users.verified, true),
-      // Exclude current user
-      db.$with('excluded').as(db.select().from(users).where(eq(users.id, currentUserId)))
-    ));
-  
-  return adminCount[0]?.count > 0;
-}
+
 
 export const actions: Actions = {
   verifyUser: async ({ request, locals }) => {

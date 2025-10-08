@@ -5,15 +5,15 @@
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	
-	// State pour les onglets
+	// Tab state
 	let activeTab = $state<'users' | 'invitations' | 'create'>('users');
 	
-	// State pour le formulaire d'invitation
+	// Invitation form state
 	let inviteEmail = $state('');
 	let inviteRole = $state('author');
 	let showCopySuccess = $state(false);
 	
-	// Fonctions utilitaires
+	// Utility functions
 	function copyInviteUrl(url?: string) {
 		if (!url) return;
 		navigator.clipboard.writeText(url).then(() => {
@@ -22,7 +22,7 @@
 				showCopySuccess = false;
 			}, 2000);
 		}).catch(() => {
-			// Fallback pour les navigateurs qui ne supportent pas l'API clipboard
+			// Fallback for browsers that don't support clipboard API
 			const textArea = document.createElement('textarea');
 			textArea.value = url;
 			document.body.appendChild(textArea);
@@ -39,7 +39,7 @@
 	// Reset form after success
 	$effect(() => {
 		if (form?.success && form?.inviteUrl) {
-			// Réinitialiser le formulaire après 3 secondes
+			// Reset form after 3 seconds
 			setTimeout(() => {
 				inviteEmail = '';
 				inviteRole = 'author';
@@ -61,7 +61,7 @@
 	}
 	
 	function canChangeRole(user: any): boolean {
-		// Ne peut pas changer son propre rôle d'admin s'il est le seul
+		// Cannot change own admin role if it's the only one
 		if (user.id === data.currentUserId && user.role === 'admin') {
 			const adminCount = data.users.filter(u => u.role === 'admin' && u.verified).length;
 			return adminCount > 1;
@@ -72,10 +72,10 @@
 </script>
 
 <svelte:head>
-	<title>Admin - Gestion complète</title>
+	<title>Admin - Complete Management</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="py-6">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mb-8">
 			<h1 class="text-3xl font-bold text-gray-900">Administration</h1>
@@ -460,12 +460,5 @@
 				</div>
 			</div>
 		{/if}
-
-		<!-- Navigation -->
-		<div class="mt-8">
-			<a href="/dashboard" class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">
-				← Back to dashboard
-			</a>
-		</div>
 	</div>
 </div>
