@@ -38,29 +38,30 @@ export const actions: Actions = {
 			};
 		}
 
-		try {
-			// Parse content JSON
-			let content;
-			if (contentJson) {
-				try {
-					content = JSON.parse(contentJson);
-				} catch {
-					return {
-						error: 'Invalid content format'
-					};
-				}
-			} else {
-				content = [];
+		// Parse content JSON
+		let content;
+		if (contentJson) {
+			try {
+				content = JSON.parse(contentJson);
+			} catch {
+				return {
+					error: 'Invalid content format'
+				};
 			}
+		} else {
+			content = [];
+		}
 
-			// Generate slug from title
-			let slug = title
-				.toLowerCase()
-				.replace(/[^a-z0-9\s-]/g, '')
-				.replace(/\s+/g, '-')
-				.replace(/-+/g, '-')
-				.trim();
+		// Generate slug from title
+		let slug = title
+			.toLowerCase()
+			.replace(/[^a-z0-9\s-]/g, '')
+			.replace(/\s+/g, '-')
+			.replace(/-+/g, '-')
+			.trim();
 
+		let newPost;
+		try {
 			// Check if slug already exists and make it unique
 			const [existingPost] = await db
 				.select({ id: posts.id })
@@ -74,7 +75,7 @@ export const actions: Actions = {
 			}
 
 			// Create the post
-			const [newPost] = await db
+			[newPost] = await db
 				.insert(posts)
 				.values({
 					authorId: locals.user.id,
@@ -94,17 +95,14 @@ export const actions: Actions = {
 				})
 				.returning({ id: posts.id, slug: posts.slug });
 
-			// Redirect to the new post
-			throw redirect(302, `/blog/${newPost.slug}`);
-
 		} catch (err) {
 			console.error('Error creating blog post:', err);
-			if (err instanceof Error && 'status' in err) {
-				throw err;
-			}
 			return {
 				error: 'Failed to create blog post'
 			};
 		}
+
+		// If we get here, the post was created successfully, so redirect
+		throw redirect(302, `/blog/${newPost.slug}`);
 	}
 };

@@ -90,23 +90,25 @@ export const actions: Actions = {
 			};
 		}
 
-		try {
-			// Parse content JSON
-			let content;
-			if (contentJson) {
-				try {
-					content = JSON.parse(contentJson);
-				} catch {
-					return {
-						error: 'Invalid content format'
-					};
-				}
-			} else {
-				content = [];
+		// Parse content JSON
+		let content;
+		if (contentJson) {
+			try {
+				content = JSON.parse(contentJson);
+			} catch {
+				return {
+					error: 'Invalid content format'
+				};
 			}
+		} else {
+			content = [];
+		}
 
+		let currentPost;
+		let newSlug;
+		try {
 			// Get the current post to check permissions
-			const [currentPost] = await db
+			[currentPost] = await db
 				.select({ id: posts.id, authorId: posts.authorId, slug: posts.slug })
 				.from(posts)
 				.where(eq(posts.slug, slug))
@@ -122,7 +124,7 @@ export const actions: Actions = {
 			}
 
 			// Generate new slug if title changed
-			let newSlug = currentPost.slug;
+			newSlug = currentPost.slug;
 			if (title !== currentPost.slug) {
 				newSlug = title
 					.toLowerCase()
@@ -164,18 +166,15 @@ export const actions: Actions = {
 				})
 				.where(eq(posts.id, currentPost.id));
 
-			// Redirect to the updated post (with new slug if changed)
-			throw redirect(302, `/blog/${newSlug}`);
-
 		} catch (err) {
 			console.error('Error updating blog post:', err);
-			if (err instanceof Error && 'status' in err) {
-				throw err;
-			}
 			return {
 				error: 'Failed to update blog post'
 			};
 		}
+
+		// If we get here, the post was updated successfully, so redirect
+		throw redirect(302, `/blog/${newSlug}`);
 	},
 
 	delete: async ({ locals, params }) => {
@@ -207,17 +206,14 @@ export const actions: Actions = {
 				.delete(posts)
 				.where(eq(posts.id, currentPost.id));
 
-			// Redirect to blog listing
-			throw redirect(302, '/blog');
-
 		} catch (err) {
 			console.error('Error deleting blog post:', err);
-			if (err instanceof Error && 'status' in err) {
-				throw err;
-			}
 			return {
 				error: 'Failed to delete blog post'
 			};
 		}
+
+		// If we get here, the post was deleted successfully, so redirect
+		throw redirect(302, '/blog');
 	}
 };
