@@ -7,9 +7,9 @@
 
   let data = {
     og: {
-      title: 'Certless - A certificate authority for the decentralized web',
+      title: 'Secure Document Access | Certless',
       description:
-        'Certless is a certificate authority for the decentralized web. We provide free SSL certificates for decentralized websites.',
+        'You have been sent documents via Certless. Open this link to verify your identity and access them securely.',
     },
   };
 </script>
@@ -32,8 +32,8 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Title" />
-  <meta name="twitter:description" content="Description" />
+  <meta name="twitter:title" content={data.og.title} />
+  <meta name="twitter:description" content={data.og.description} />
   <meta
     name="twitter:image"
     content={`https://${page.url.host}/og-reveal.png`}
