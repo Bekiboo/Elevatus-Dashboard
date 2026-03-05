@@ -62,7 +62,8 @@
 		"bcrypt": "^6.0.0",
 		"bcryptjs": "^3.0.2",
 		"jsonwebtoken": "^9.0.2",
-		"postgres": "^3.4.7"
+		"postgres": "^3.4.7",
+		"svelte-meta-tags": "^4.5.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

@@ -2,43 +2,47 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
+  import { MetaTags } from 'svelte-meta-tags';
 
 	let { children } = $props();
 
-  let data = {
+  const data = {
     og: {
       title: 'Secure Document Access | Certless',
       description:
-        'You have been sent documents via Certless. Open this link to verify your identity and access them securely.',
-    },
+        'You have been sent documents via Certless. Open this link to verify your identity and access them securely.'
+    }
   };
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	  <title>{data.og.title}</title>
-  <meta name="description" content={data.og.description} />
-  <meta property="og:title" content={data.og.title} />
-  <meta property="og:description" content={data.og.description} />
-  <meta
-    property="og:url"
-    content={`https://${page.url.host}${page.url.pathname}`}
-  /> <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Certless" />
-  <meta
-    property="og:image"
-    content={`https://${page.url.host}/og-reveal.png`}
-  />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={data.og.title} />
-  <meta name="twitter:description" content={data.og.description} />
-  <meta
-    name="twitter:image"
-    content={`https://${page.url.host}/og-reveal.png`}
-  />
-  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
+
+<MetaTags
+  title={data.og.title}
+  description={data.og.description}
+  robots="noindex, nofollow"
+  openGraph={{
+    title: data.og.title,
+    description: data.og.description,
+    url: `https://${page.url.host}${page.url.pathname}`,
+    type: 'website',
+    siteName: 'Certless',
+    images: [
+      {
+        url: `https://${page.url.host}/og-reveal.png`,
+        width: 1200,
+        height: 630
+      }
+    ]
+  }}
+  twitter={{
+    cardType: 'summary_large_image',
+    title: data.og.title,
+    description: data.og.description,
+    image: `https://${page.url.host}/og-reveal.png`
+  }}
+/>
 
 {@render children?.()}
