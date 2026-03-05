@@ -3,6 +3,14 @@
 	import favicon from '$lib/assets/favicon.svg';
 
 	let { children } = $props();
+
+  let data = {
+    og: {
+      title: 'Certless - A certificate authority for the decentralized web',
+      description:
+        'Certless is a certificate authority for the decentralized web. We provide free SSL certificates for decentralized websites.',
+    },
+  };
 </script>
 
 <svelte:head>
