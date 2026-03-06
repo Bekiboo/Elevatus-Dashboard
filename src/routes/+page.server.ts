@@ -4,11 +4,11 @@ import type { PageServerLoad, Actions } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
   // If user is logged in, redirect to dashboard in app layout
   if (locals.user) {
-    throw redirect(302, '/dashboard');
+    // throw redirect(302, '/dashboard');
   }
   
   // Otherwise, redirect to login page
-  throw redirect(302, '/login');
+  // throw redirect(302, '/login');
 };
 
 export const actions: Actions = {

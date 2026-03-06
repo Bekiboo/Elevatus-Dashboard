@@ -3,7 +3,7 @@ import type { LayoutLoad } from './$types';
 
 export const load: LayoutLoad = ({ url }) => {
 	const canonicalUrl = new URL(url.pathname, url.origin).href;
-	const imageUrl = new URL('/og-reveal.png', url.origin).href;
+	const imageUrl = new URL('/og-reveal1.png', url.origin).href;
 
 	return defineBaseMetaTags({
 		title: 'Secure Document Access | Certless',
